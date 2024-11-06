@@ -15,6 +15,7 @@ namespace NZWalks.Controllers
 
         public RegionsController(IRegionRepository regions) => _regions = regions;
 
+        
         [HttpGet]
         [EnableRateLimiting("fixed")]
         public async Task<IActionResult> GetAll()

@@ -1,7 +1,7 @@
-﻿
-using Microsoft.AspNetCore.RateLimiting;
+﻿using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
+using NZWalks.DataMapper;
 using NZWalks.Repository;
 
 namespace NZWalks
@@ -11,19 +11,14 @@ namespace NZWalks
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-
             var connection_string = builder.Configuration.GetConnectionString("NZWlaksConnection");
+
             builder.Services.AddDbContext<NZWalksDbContext>(options => options.UseSqlServer(connection_string));
-
-
-            builder.Services.AddScoped<IRegionRepository, RegionRepository>();
-            
+            builder.Services.AddScoped<IRegionRepository, RegionRepository>();            
             builder.Services.AddControllers();
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-           
+    
             builder.Services.AddRateLimiter(rate_limit =>
             {
                 rate_limit.AddFixedWindowLimiter("fixed", options =>
@@ -36,9 +31,10 @@ namespace NZWalks
                 rate_limit.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             });
 
+            builder.Services.AddAutoMapper(typeof(MapperProfile));
+
             var app = builder.Build();
-
-
+            
             InitializeSwagger(app);
 
             app.UseHttpsRedirection();
