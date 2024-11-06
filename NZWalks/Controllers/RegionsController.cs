@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using NZWalks.Data;
-using NZWalks.Models.Domain;
 using NZWalks.Models.DTO;
 using NZWalks.Repository;
 
@@ -15,10 +13,7 @@ namespace NZWalks.Controllers
         
         private readonly IRegionRepository _regions;
 
-        public RegionsController(IRegionRepository regions)
-        {
-           _regions = regions;
-        }
+        public RegionsController(IRegionRepository regions) => _regions = regions;
 
         [HttpGet]
         [EnableRateLimiting("fixed")]

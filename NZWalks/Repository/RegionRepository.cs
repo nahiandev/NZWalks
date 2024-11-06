@@ -9,10 +9,7 @@ namespace NZWalks.Repository
     {
         private readonly NZWalksDbContext _context;
 
-        public RegionRepository(NZWalksDbContext context)
-        {
-            _context = context;
-        }
+        public RegionRepository(NZWalksDbContext context) => _context = context;
 
         public async Task<Region> CreateAsync(AddRegionDTO incoming_region)
         {
@@ -32,7 +29,9 @@ namespace NZWalks.Repository
 
         public async Task<Region?> DeleteAsync(Guid id)
         {
-            var selected_item = await _context.Regions.FirstOrDefaultAsync(x => x.Id == id);
+            var selected_item = await _context.Regions
+                .FirstOrDefaultAsync(x => x.Id == id);
+            
             if(selected_item is null) return null;
 
             _context.Regions.Remove(selected_item);
@@ -49,13 +48,15 @@ namespace NZWalks.Repository
 
         public async Task<Region?> GetByIdAsync(Guid id)
         {
-           var item = await _context.Regions.FirstOrDefaultAsync(x => x.Id == id);
+            var item = await _context.Regions
+                .FirstOrDefaultAsync(x => x.Id == id);
             return item;
         }
 
         public async Task<RegionDTO> UpdateAsync(Guid id, UpdateRegionDTO new_region)
         {
-            var existing_item = await _context.Regions.FirstOrDefaultAsync(_ => _.Id == id);
+            var existing_item = await _context.Regions
+                .FirstOrDefaultAsync(_ => _.Id == id);
 
             if (existing_item is null) return null;
 
@@ -65,8 +66,13 @@ namespace NZWalks.Repository
 
             await _context.SaveChangesAsync();
 
+            var updated = new RegionDTO
+            {
+                Code = existing_item.Code,
+                Name = existing_item.Name,
+                RegionImageUrl = existing_item.RegionImageUrl
+            };
             
-            var updated = new RegionDTO { Code = existing_item.Code, Name = existing_item.Name, RegionImageUrl = existing_item.RegionImageUrl};
             return updated;
         }
     }
