@@ -12,13 +12,12 @@ namespace NZWalks.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
-        private readonly NZWalksDbContext _context;
+        
         private readonly IRegionRepository _regions;
 
-        public RegionsController(NZWalksDbContext context, IRegionRepository regions)
+        public RegionsController(IRegionRepository regions)
         {
-            _context = context;
-            _regions = regions;
+           _regions = regions;
         }
 
         [HttpGet]
@@ -66,28 +65,10 @@ namespace NZWalks.Controllers
         [EnableRateLimiting("fixed")]
         
 
-        public IActionResult Create([FromBody] AddRegionDTO incoming_region)
+        public async Task<IActionResult> Create([FromBody] AddRegionDTO incoming_region)
         {
-            Region domain_region = new()
-            {
-                Code = incoming_region.Code,
-                Name = incoming_region.Name,
-                RegionImageUrl = incoming_region.RegionImageUrl
-            };
-
-            _context.Regions.Add(domain_region);
-            _context.SaveChanges();
-
-
-            RegionDTO returned_region = new()
-            { 
-                
-                Code = domain_region.Code, 
-                Name = domain_region.Code, 
-                RegionImageUrl = domain_region.RegionImageUrl 
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = domain_region.Id }, returned_region);
+            var domain_region = await _regions.CreateAsync(incoming_region);
+            return CreatedAtAction(nameof(GetById), new { id = domain_region.Id }, new RegionDTO { Code = domain_region.Code, Name = domain_region.Name, RegionImageUrl = domain_region.RegionImageUrl });
         }
 
         [HttpPut]
@@ -114,5 +95,8 @@ namespace NZWalks.Controllers
             if (domain_regions is null) return BadRequest();
             return NoContent();
         }
+
+
+        
     }
 }

@@ -14,6 +14,21 @@ namespace NZWalks.Repository
             _context = context;
         }
 
+        public async Task<Region> CreateAsync(AddRegionDTO incoming_region)
+        {
+            Region domain_region = new()
+            {
+                Id = Guid.NewGuid(),
+                Code = incoming_region.Code,
+                Name = incoming_region.Name,
+                RegionImageUrl = incoming_region.RegionImageUrl
+            };
+
+            await _context.Regions.AddAsync(domain_region);
+            await _context.SaveChangesAsync();
+
+            return domain_region;
+        }
 
         public async Task<Region?> DeleteAsync(Guid id)
         {
@@ -24,7 +39,6 @@ namespace NZWalks.Repository
             await _context.SaveChangesAsync();
 
             return selected_item;
-
         }
 
         public async Task<List<Region>> GetAllAsync()
@@ -33,9 +47,9 @@ namespace NZWalks.Repository
             return all_items;
         }
 
-        public async Task<Region> GetByIdAsync(Guid id)
+        public async Task<Region?> GetByIdAsync(Guid id)
         {
-            var item = await _context.Regions.FirstOrDefaultAsync(x => x.Id == id);
+           var item = await _context.Regions.FirstOrDefaultAsync(x => x.Id == id);
             return item;
         }
 
@@ -53,8 +67,6 @@ namespace NZWalks.Repository
 
             
             var updated = new RegionDTO { Code = existing_item.Code, Name = existing_item.Name, RegionImageUrl = existing_item.RegionImageUrl};
-
-
             return updated;
         }
     }
