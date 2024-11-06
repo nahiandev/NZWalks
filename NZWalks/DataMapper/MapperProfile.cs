@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using NZWalks.Models.Domain;
+using NZWalks.Models.DTO;
+
 
 namespace NZWalks.DataMapper
 {
@@ -6,7 +9,7 @@ namespace NZWalks.DataMapper
     {
         public MapperProfile()
         {
-            
+            CreateMap<Region, RegionDTO>().ReverseMap();
         }
     }
 }

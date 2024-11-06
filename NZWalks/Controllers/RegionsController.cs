@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using NZWalks.Models.DTO;
 using NZWalks.Repository;
@@ -12,28 +13,20 @@ namespace NZWalks.Controllers
     {
         
         private readonly IRegionRepository _regions;
+        private readonly IMapper _mapper;
 
-        public RegionsController(IRegionRepository regions) => _regions = regions;
+        public RegionsController(IRegionRepository regions, IMapper mapper)
+        {
+            _regions = regions;
+            _mapper = mapper;
+        }
 
-        
         [HttpGet]
         [EnableRateLimiting("fixed")]
         public async Task<IActionResult> GetAll()
         {
             var domain_regions = await _regions.GetAllAsync();
-
-            List<RegionDTO> dto_regions = [];
-
-            foreach (var region in domain_regions)
-            {
-                dto_regions.Add(new()
-                {
-                    Code = region.Code,
-                    Name = region.Name,
-                    RegionImageUrl = region.RegionImageUrl
-                });
-            }
-
+            List<RegionDTO> dto_regions = _mapper.Map<List<RegionDTO>>(domain_regions);
             return Ok(dto_regions);
         }
 
