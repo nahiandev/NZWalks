@@ -1,4 +1,5 @@
-﻿using NZWalks.Models.Domain;
+﻿using Microsoft.AspNetCore.Mvc;
+using NZWalks.Models.Domain;
 
 namespace NZWalks.Repository
 {
@@ -6,5 +7,6 @@ namespace NZWalks.Repository
     {
         Task<List<Region>> GetAllAsync();
         Task<Region> GetByIdAsync(Guid id);
+        Task<Region?> DeleteAsync(Guid id);
     }
 }

@@ -121,17 +121,13 @@ namespace NZWalks.Controllers
         [EnableRateLimiting("fixed")]
         [Route("{id:Guid}")]
 
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var domain_regions = _context.Regions;
-            var region_to_delete = domain_regions.FirstOrDefault(y => y.Id == id);
-
-            if (region_to_delete is null) return BadRequest();
-
-            domain_regions.Remove(region_to_delete);
-            _context.SaveChanges();
-
-            return Ok(region_to_delete);
+            var domain_regions = await _regions.DeleteAsync(id);
+            
+            
+            if (domain_regions is null) return BadRequest();
+            return NoContent();
         }
     }
 }
