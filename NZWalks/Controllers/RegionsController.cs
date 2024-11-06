@@ -94,25 +94,10 @@ namespace NZWalks.Controllers
         [EnableRateLimiting("fixed")]
         [Route("{id:Guid}")]
 
-        public IActionResult Update(Guid id, UpdateRegionDTO new_region)
+        public async Task<IActionResult> Update(Guid id, UpdateRegionDTO new_region)
         {
-            var domain_region = _context.Regions.FirstOrDefault(x => x.Id == id);
-
-            if (domain_region is null) return NotFound();
-
-            domain_region.Code = new_region.Code;
-            domain_region.Name = new_region.Name;
-            domain_region.RegionImageUrl = new_region.RegionImageUrl;
-
-            _context.SaveChanges();
-
-            var updated_region = new RegionDTO()
-            {
-                Code = domain_region.Code,
-                Name = domain_region.Name,
-                RegionImageUrl = domain_region.RegionImageUrl
-            };
-
+            var updated_region = await _regions.UpdateAsync(id, new_region);
+            if (updated_region is null) return BadRequest();
             return Ok(updated_region);
         }
 
