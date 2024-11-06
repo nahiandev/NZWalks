@@ -10,6 +10,9 @@ namespace NZWalks.DataMapper
         public MapperProfile()
         {
             CreateMap<Region, RegionDTO>().ReverseMap();
+            CreateMap<Region, AddRegionDTO>().ReverseMap();
+            CreateMap<UpdateRegionDTO, RegionDTO>().ReverseMap();
+            CreateMap<Region, UpdateRegionDTO>().ReverseMap();
         }
     }
 }

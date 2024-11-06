@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
 using NZWalks.Models.Domain;
-using NZWalks.Models.DTO;
 
 namespace NZWalks.Repository
 {
@@ -9,22 +8,20 @@ namespace NZWalks.Repository
     {
         private readonly NZWalksDbContext _context;
 
-        public RegionRepository(NZWalksDbContext context) => _context = context;
-
-        public async Task<Region> CreateAsync(AddRegionDTO incoming_region)
+        public RegionRepository(NZWalksDbContext context)
         {
-            Region domain_region = new()
+            _context = context;
+        }
+
+        public async Task<Region> CreateAsync(Region incoming_region)
+        {
+            if(incoming_region != null)
             {
-                Id = Guid.NewGuid(),
-                Code = incoming_region.Code,
-                Name = incoming_region.Name,
-                RegionImageUrl = incoming_region.RegionImageUrl
-            };
+                await _context.Regions.AddAsync(incoming_region);
+                await _context.SaveChangesAsync();
+            }
 
-            await _context.Regions.AddAsync(domain_region);
-            await _context.SaveChangesAsync();
-
-            return domain_region;
+            return incoming_region;
         }
 
         public async Task<Region?> DeleteAsync(Guid id)
@@ -53,7 +50,7 @@ namespace NZWalks.Repository
             return item;
         }
 
-        public async Task<RegionDTO> UpdateAsync(Guid id, UpdateRegionDTO new_region)
+        public async Task<Region?> UpdateAsync(Guid id, Region new_region)
         {
             var existing_item = await _context.Regions
                 .FirstOrDefaultAsync(_ => _.Id == id);
@@ -63,17 +60,9 @@ namespace NZWalks.Repository
             existing_item.Code = new_region.Code;
             existing_item.Name = new_region.Name;
             existing_item.RegionImageUrl = new_region.RegionImageUrl;
-
             await _context.SaveChangesAsync();
 
-            var updated = new RegionDTO
-            {
-                Code = existing_item.Code,
-                Name = existing_item.Name,
-                RegionImageUrl = existing_item.RegionImageUrl
-            };
-            
-            return updated;
+            return existing_item;
         }
     }
 }
