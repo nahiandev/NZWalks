@@ -11,7 +11,7 @@ namespace NZWalks.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
-        
+
         private readonly IRegionRepository _regions;
         private readonly IMapper _mapper;
 
@@ -22,26 +22,25 @@ namespace NZWalks.Controllers
         }
 
         [HttpGet]
-       
+
         public async Task<IActionResult> GetAll()
         {
             var domain_regions = await _regions.GetAllAsync();
             List<RegionDTO> dto_regions = _mapper.Map<List<RegionDTO>>(domain_regions);
             return Ok(dto_regions);
         }
-
+        /*
+            GET: api/Regions/id
+            Concrete Implementation goes here
+        */
         [HttpGet]
-       
         [Route("{id:Guid}")]
-
         public async Task<IActionResult> GetById(Guid id)
         {
             var domain_region = await _regions.GetByIdAsync(id);
-
             if (domain_region is null) return NotFound();
 
             RegionDTO dto_region = _mapper.Map<RegionDTO>(domain_region);
-
             return Ok(dto_region);
         }
 
@@ -51,9 +50,24 @@ namespace NZWalks.Controllers
             var converted_domain_region = _mapper.Map<Region>(incoming_region);
             var new_domain_region = await _regions.CreateAsync(converted_domain_region);
 
-            return CreatedAtAction(nameof(GetById), 
-                new { id = new_domain_region.Id }, 
+            return CreatedAtAction(nameof(GetById),
+                new { id = new_domain_region.Id },
                 _mapper.Map<RegionDTO>(new_domain_region));
+        }
+
+        [HttpDelete]
+        [Route("deleteall")]
+        public async Task<IActionResult> BulkDelete()
+        {
+            await _regions.BulkDeleteAsync();
+            return NoContent();
+        }
+
+        [HttpGet]
+        [Route("count")]
+        public async Task<IActionResult> Count()
+        {
+            return Ok(await _regions.CountAsync());
         }
 
         [HttpPut]
@@ -68,7 +82,7 @@ namespace NZWalks.Controllers
 
 
         [HttpDelete]
-     
+
         [Route("{id:Guid}")]
 
         public async Task<IActionResult> Delete([FromRoute] Guid id)

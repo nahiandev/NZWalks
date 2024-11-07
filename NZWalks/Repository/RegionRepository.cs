@@ -13,9 +13,31 @@ namespace NZWalks.Repository
             _context = context;
         }
 
+        public async Task BulkDeleteAsync()
+        {
+            var context = _context.Regions;
+            var regions = await context.ToListAsync();
+
+            if (regions.Count > 0)
+            {
+                foreach (var region in regions)
+                {
+                    context.Remove(region);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<Dictionary<string, int>> CountAsync()
+        {
+            var count = await _context.Regions.CountAsync();
+            return new Dictionary<string, int> { { "count", count } };
+        }
+
         public async Task<Region> CreateAsync(Region incoming_region)
         {
-            if(incoming_region != null)
+            if (incoming_region != null)
             {
                 await _context.Regions.AddAsync(incoming_region);
                 await _context.SaveChangesAsync();
@@ -28,8 +50,8 @@ namespace NZWalks.Repository
         {
             var selected_item = await _context.Regions
                 .FirstOrDefaultAsync(x => x.Id == id);
-            
-            if(selected_item is null) return null;
+
+            if (selected_item is null) return null;
 
             _context.Regions.Remove(selected_item);
             await _context.SaveChangesAsync();
@@ -43,6 +65,10 @@ namespace NZWalks.Repository
             return all_items;
         }
 
+        /*  
+            Repository pattern to separate the 
+            data access logic from the business logic.
+        */
         public async Task<Region?> GetByIdAsync(Guid id)
         {
             var item = await _context.Regions
