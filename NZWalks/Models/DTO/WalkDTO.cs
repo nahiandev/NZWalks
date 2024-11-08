@@ -1,4 +1,6 @@
-﻿namespace NZWalks.Models.DTO
+﻿using NZWalks.Models.Domain;
+
+namespace NZWalks.Models.DTO
 {
     public class WalkDTO
     {
@@ -8,5 +10,7 @@
         public string? WalkImamgeUrl { get; set; }
         public Guid DifficultyId { get; set; }
         public Guid RegionId { get; set; }
+        public required DifficultyDTO Difficulty { get; set; }
+        public required RegionDTO Region { get; set; }
     }
 }

@@ -17,15 +17,31 @@ namespace NZWalks.Repository
         {
             var walks = _context.Walks;
 
-            //Walk? match = (await walks.ToListAsync()).Find(__ => __.Id == walk.Id);
-
-
             var exists = await walks.AnyAsync(_ => _.Id == walk.Id);
 
             if (exists) return null;
             
             await walks.AddAsync(walk);
             await _context.SaveChangesAsync();
+            return walk;
+        }
+
+        public async Task<List<Walk>> GetAllAsync()
+        {
+            var walks = await _context.Walks.Include(d => d.Difficulty).Include(r => r.Region)
+                .ToListAsync();
+            return walks;
+        }
+
+        public async Task<Walk?> GetByIdAsync(Guid id)
+        {
+            var walk = await _context.Walks
+                .Include(d => d.Difficulty)
+                .Include(r => r.Region)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (walk is null) return null;
+            
             return walk;
         }
     }

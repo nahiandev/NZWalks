@@ -28,7 +28,29 @@ namespace NZWalks.Controllers
 
             var mapped_walk = _mapper.Map<WalkDTO>(saved_walk);
 
-            return CreatedAtAction(nameof(Create), saved_walk.Id,mapped_walk);
+            return Ok(mapped_walk);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var walks = await _walks.GetAllAsync();
+
+            var mapped_walks = _mapper.Map<List<WalkDTO>>(walks);
+
+            return Ok(mapped_walks);
+        }
+
+        [HttpGet]
+        [Route("id:Guid")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var walk = await _walks.GetByIdAsync(id);
+            if (walk is null) return NotFound();
+
+            var mapped_walk = _mapper.Map<WalkDTO>(walk);
+        
+            return Ok(mapped_walk);
         }
     }
 }
