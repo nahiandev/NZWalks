@@ -47,14 +47,21 @@ namespace NZWalks.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddRegionDTO incoming_region)
         {
-            var converted_domain_region = _mapper.Map<Region>(incoming_region);
-            var new_domain_region = await _regions.CreateAsync(converted_domain_region);
+            var is_valid = ModelState.IsValid;
 
-            return CreatedAtAction(nameof(GetById),
-                new { id = new_domain_region.Id },
-                _mapper.Map<RegionDTO>(new_domain_region));
+            if (is_valid)
+            {
+                var converted_domain_region = _mapper.Map<Region>(incoming_region);
+                var new_domain_region = await _regions.CreateAsync(converted_domain_region);
+
+                return CreatedAtAction(nameof(GetById),
+                    new { id = new_domain_region.Id },
+                    _mapper.Map<RegionDTO>(new_domain_region));
+            }
+
+            return BadRequest(ModelState);
         }
-
+        
         [HttpDelete]
         [Route("deleteall")]
         public async Task<IActionResult> BulkDelete()
@@ -74,10 +81,17 @@ namespace NZWalks.Controllers
         [Route("{id:Guid}")]
         public async Task<IActionResult> Update(Guid id, UpdateRegionDTO new_region)
         {
-            var temp_domain = _mapper.Map<Region>(new_region);
-            var updated_region = await _regions.UpdateAsync(id, temp_domain);
-            if (updated_region is null) return BadRequest();
-            return Ok(updated_region);
+            var is_valid = ModelState.IsValid;
+
+            if (is_valid)
+            {
+                var temp_domain = _mapper.Map<Region>(new_region);
+                var updated_region = await _regions.UpdateAsync(id, temp_domain);
+                if (updated_region is null) return BadRequest();
+                return Ok(updated_region);
+            }
+
+            return BadRequest(ModelState);
         }
 
 

@@ -52,5 +52,33 @@ namespace NZWalks.Controllers
         
             return Ok(mapped_walk);
         }
+
+        [HttpPut]
+        [Route("id:Guid")]
+        public async Task<IActionResult> Update(Guid id, UpdateWalkDTO new_walk)
+        {
+            var converted_domain_walk = _mapper.Map<Walk>(new_walk);
+
+            var updated_domain_walk = await _walks.UpdateAsync(id, converted_domain_walk);
+
+            if (updated_domain_walk is null) BadRequest();
+
+            var mapped_walk = _mapper.Map<WalkDTO>(updated_domain_walk);
+
+            return Ok(mapped_walk);
+        }
+
+
+        [HttpDelete]
+        [Route("id:Guid")]
+
+        public async Task<IActionResult> Remove(Guid id)
+        {
+            var deleted_response = await _walks.RemoveAsync(id);
+
+            if (deleted_response is null) return BadRequest();
+
+            return NoContent();
+        }
     }
 }
