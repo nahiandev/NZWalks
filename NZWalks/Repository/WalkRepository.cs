@@ -16,18 +16,22 @@ namespace NZWalks.Repository
         public async Task<Walk> CreateAsync(Walk walk)
         {
             var walks = _context.Walks;
+
+            //Walk? match = (await walks.ToListAsync()).Find(__ => __.Id == walk.Id);
+
+
+            var match = (await walks.ToListAsync()).Any(__ => __.Id == walk.Id);
+
+            if (!match)
+            {
+                await walks.AddAsync(walk);
+                await _context.SaveChangesAsync();
+                return walk;
+            }
+
             
 
-            Walk? match = (await walks.ToListAsync())
-                .Find(__ => __.Id == walk.Id);
-
-
-            if (match is null) return null;
-
-            await walks.AddAsync(walk);
-            await _context.SaveChangesAsync();
-
-            return walk;
+            return null;
         }
     }
 }
