@@ -20,18 +20,13 @@ namespace NZWalks.Repository
             //Walk? match = (await walks.ToListAsync()).Find(__ => __.Id == walk.Id);
 
 
-            var match = (await walks.ToListAsync()).Any(__ => __.Id == walk.Id);
+            var exists = await walks.AnyAsync(_ => _.Id == walk.Id);
 
-            if (!match)
-            {
-                await walks.AddAsync(walk);
-                await _context.SaveChangesAsync();
-                return walk;
-            }
-
+            if (exists) return null;
             
-
-            return null;
+            await walks.AddAsync(walk);
+            await _context.SaveChangesAsync();
+            return walk;
         }
     }
 }
