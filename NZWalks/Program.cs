@@ -11,10 +11,14 @@ namespace NZWalks
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connection_string = builder.Configuration.GetConnectionString("NZWlaksConnection");
 
+            var connection_string = builder.Configuration.GetConnectionString("NZWlaksConnection");
             builder.Services.AddDbContext<NZWalksDbContext>(options => options.UseSqlServer(connection_string));
-            builder.Services.AddScoped<IRegionRepository, RegionRepository>();            
+            
+            builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+            builder.Services.AddScoped<IWalkRepository, WalkRepository>();
+
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
