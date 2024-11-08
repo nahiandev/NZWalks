@@ -1,6 +1,6 @@
 @NZWalks_HostAddress = http://localhost:5261
 
-GET {{NZWalks_HostAddress}}/weatherforecast/
+GET {{NZWalks_HostAddress}}/nzwalks/
 Accept: application/json
 
 ###
