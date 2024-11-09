@@ -60,20 +60,17 @@ namespace NZWalks.Repository
                     walks = walks.Where(w => w.Description.Contains(query));
                 }
 
-                if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase))
+                bool is_number = double.TryParse(query.Trim(), out double result);
+
+                if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase) && is_number)
                 {
-                    walks = walks.Where(w => w.LengthInKM <= Convert.ToDouble(query.Trim()));
+                    walks = walks.Where(w => w.LengthInKM <= result);
                 }
-
-
-                //walks = filter_property.ToLower() switch
-                //{
-                //    "name" => walks.Where(w => w.Name.Contains(query, StringComparison.OrdinalIgnoreCase)),
-                //    "description" => walks.Where(w => w.Description.Contains(query, StringComparison.OrdinalIgnoreCase)),
-                //    "lengthinkm" => walks.Where(w => w.LengthInKM <= Convert.ToDouble(query.Trim())),
-                //    _ => walks
-                //};
-
+                else
+                {
+                    return null;
+                }
+                    
             };
 
             return await walks.ToListAsync();

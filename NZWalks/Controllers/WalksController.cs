@@ -26,6 +26,8 @@ namespace NZWalks.Controllers
         {
             var walks = await _walks.GetAllAsync(filter_property, query);
 
+            if (walks is null) return BadRequest();
+
             var mapped_walks = _mapper.Map<List<WalkDTO>>(walks);
 
             return Ok(mapped_walks);
