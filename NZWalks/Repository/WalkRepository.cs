@@ -38,11 +38,25 @@ namespace NZWalks.Repository
             return selected_to_delete;
         }
 
-        public async Task<List<Walk>> GetAllAsync()
+        public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null)
         {
-            var walks = await _context.Walks.Include(d => d.Difficulty).Include(r => r.Region)
-                .ToListAsync();
-            return walks;
+            //var walks = await _context.Walks.Include(d => d.Difficulty).Include(r => r.Region)
+            //    .ToListAsync();
+            //return walks;
+
+
+            var walks = _context.Walks.Include(d => d.Difficulty)
+                .Include(r => r.Region).AsNoTracking().AsQueryable();
+
+            if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
+            {
+                if (filter_property.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(w => w.Name.Contains(query));
+                }
+            }
+
+            return await walks.ToListAsync();
         }
 
         public async Task<Walk?> GetByIdAsync(Guid id)
