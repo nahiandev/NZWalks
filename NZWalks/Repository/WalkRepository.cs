@@ -69,7 +69,7 @@ namespace NZWalks.Repository
             walk.Name = new_walk.Name;
             walk.Description = new_walk.Description;
             walk.LengthInKM = new_walk.LengthInKM;
-            walk.WalkImamgeUrl = new_walk.WalkImamgeUrl;
+            walk.WalkImageUrl = new_walk.WalkImageUrl;
             walk.DifficultyId = new_walk.DifficultyId;
             walk.RegionId = new_walk.RegionId;
 

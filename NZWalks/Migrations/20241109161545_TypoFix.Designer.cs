@@ -12,8 +12,8 @@ using NZWalks.Data;
 namespace NZWalks.Migrations
 {
     [DbContext(typeof(NZWalksDbContext))]
-    [Migration("20241106121121_MakeRequired")]
-    partial class MakeRequired
+    [Migration("20241109161545_TypoFix")]
+    partial class TypoFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -85,12 +85,14 @@ namespace NZWalks.Migrations
                     b.Property<Guid>("RegionId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("WalkImamgeUrl")
+                    b.Property<string>("WalkImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DifficultyId");
+
+                    b.HasIndex("RegionId");
 
                     b.ToTable("Walks");
                 });
@@ -103,7 +105,15 @@ namespace NZWalks.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("NZWalks.Models.Domain.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Difficulty");
+
+                    b.Navigation("Region");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,8 +12,8 @@ using NZWalks.Data;
 namespace NZWalks.Migrations
 {
     [DbContext(typeof(NZWalksDbContext))]
-    [Migration("20241104164605_PartnerRevoved")]
-    partial class PartnerRevoved
+    [Migration("20241109160935_FreshenUp")]
+    partial class FreshenUp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,6 +92,8 @@ namespace NZWalks.Migrations
 
                     b.HasIndex("DifficultyId");
 
+                    b.HasIndex("RegionId");
+
                     b.ToTable("Walks");
                 });
 
@@ -103,7 +105,15 @@ namespace NZWalks.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("NZWalks.Models.Domain.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Difficulty");
+
+                    b.Navigation("Region");
                 });
 #pragma warning restore 612, 618
         }

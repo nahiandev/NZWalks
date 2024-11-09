@@ -19,17 +19,7 @@ namespace NZWalks.Controllers
             _walks = walks;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AddWalkDTO walk)
-        {
-            var dto_to_domain_walk = _mapper.Map<Walk>(walk);
-
-            var saved_walk = await _walks.CreateAsync(dto_to_domain_walk);
-
-            var mapped_walk = _mapper.Map<WalkDTO>(saved_walk);
-
-            return Ok(mapped_walk);
-        }
+        
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -49,7 +39,19 @@ namespace NZWalks.Controllers
             if (walk is null) return NotFound();
 
             var mapped_walk = _mapper.Map<WalkDTO>(walk);
-        
+
+            return Ok(mapped_walk);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] AddWalkDTO walk)
+        {
+            var dto_to_domain_walk = _mapper.Map<Walk>(walk);
+
+            var saved_walk = await _walks.CreateAsync(dto_to_domain_walk);
+
+            var mapped_walk = _mapper.Map<WalkDTO>(saved_walk);
+
             return Ok(mapped_walk);
         }
 

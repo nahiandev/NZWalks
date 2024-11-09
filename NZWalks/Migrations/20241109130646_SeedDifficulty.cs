@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NZWalks.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedingDifficultyWithoutController : Migration
+    public partial class SeedDifficulty : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,9 +18,9 @@ namespace NZWalks.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("1c900f7f-82be-4ea7-8908-1a748fc5bcae"), "Hard" },
-                    { new Guid("6c1366bd-7194-4450-b22b-63ad8420d137"), "Medium" },
-                    { new Guid("d043934d-3481-48df-860a-e8199e9aa923"), "Easy" }
+                    { new Guid("a351cdcd-178f-406d-bfe5-5a58d9ae2349"), "Medium" },
+                    { new Guid("cbd6405b-5b60-4de4-a2de-eb55a410d1bf"), "Easy" },
+                    { new Guid("d9d1a2e3-92c1-45cc-8cf3-a307a0ec6984"), "Hard" }
                 });
         }
 
@@ -30,17 +30,17 @@ namespace NZWalks.Migrations
             migrationBuilder.DeleteData(
                 table: "Difficulties",
                 keyColumn: "Id",
-                keyValue: new Guid("1c900f7f-82be-4ea7-8908-1a748fc5bcae"));
+                keyValue: new Guid("a351cdcd-178f-406d-bfe5-5a58d9ae2349"));
 
             migrationBuilder.DeleteData(
                 table: "Difficulties",
                 keyColumn: "Id",
-                keyValue: new Guid("6c1366bd-7194-4450-b22b-63ad8420d137"));
+                keyValue: new Guid("cbd6405b-5b60-4de4-a2de-eb55a410d1bf"));
 
             migrationBuilder.DeleteData(
                 table: "Difficulties",
                 keyColumn: "Id",
-                keyValue: new Guid("d043934d-3481-48df-860a-e8199e9aa923"));
+                keyValue: new Guid("d9d1a2e3-92c1-45cc-8cf3-a307a0ec6984"));
         }
     }
 }

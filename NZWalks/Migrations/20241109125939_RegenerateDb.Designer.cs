@@ -12,8 +12,8 @@ using NZWalks.Data;
 namespace NZWalks.Migrations
 {
     [DbContext(typeof(NZWalksDbContext))]
-    [Migration("20241106102449_RequiredProps")]
-    partial class RequiredProps
+    [Migration("20241109125939_RegenerateDb")]
+    partial class RegenerateDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,6 +60,50 @@ namespace NZWalks.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Regions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d043934d-3481-48df-860a-e8199e9aa923"),
+                            Code = "FL",
+                            Name = "Florida",
+                            RegionImageUrl = "https://dummyimage.com/400x400/000/fff.png"
+                        },
+                        new
+                        {
+                            Id = new Guid("b123f4de-5678-90ab-cdef-111213141516"),
+                            Code = "CAF",
+                            Name = "California",
+                            RegionImageUrl = "https://dummyimage.com/400x400/ff0000/fff.png"
+                        },
+                        new
+                        {
+                            Id = new Guid("c67890ab-1234-56de-7890-123456789012"),
+                            Code = "NYK",
+                            Name = "New York",
+                            RegionImageUrl = "https://dummyimage.com/400x400/00ff00/fff.png"
+                        },
+                        new
+                        {
+                            Id = new Guid("d7890123-4567-89ab-cdef-098765432123"),
+                            Code = "TXS",
+                            Name = "Texas",
+                            RegionImageUrl = "https://dummyimage.com/400x400/0000ff/fff.png"
+                        },
+                        new
+                        {
+                            Id = new Guid("e0123456-7890-12ab-cdef-123456789abc"),
+                            Code = "WAS",
+                            Name = "Washington",
+                            RegionImageUrl = "https://dummyimage.com/400x400/ffff00/000.png"
+                        },
+                        new
+                        {
+                            Id = new Guid("73b191f8-fe5f-4a0e-b7d3-c04a886f1c46"),
+                            Code = "LAS",
+                            Name = "Washington",
+                            RegionImageUrl = "https://dummyimage.com/400x400/ffff00/000.png"
+                        });
                 });
 
             modelBuilder.Entity("NZWalks.Models.Domain.Walk", b =>
@@ -92,6 +136,8 @@ namespace NZWalks.Migrations
 
                     b.HasIndex("DifficultyId");
 
+                    b.HasIndex("RegionId");
+
                     b.ToTable("Walks");
                 });
 
@@ -103,7 +149,15 @@ namespace NZWalks.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("NZWalks.Models.Domain.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Difficulty");
+
+                    b.Navigation("Region");
                 });
 #pragma warning restore 612, 618
         }
