@@ -37,13 +37,12 @@ namespace NZWalks.Repository
             
             return selected_to_delete;
         }
-        
-        
+
         public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null)
         {
             var has_filter_but_no_query = !String.IsNullOrWhiteSpace(filter_property) && String.IsNullOrWhiteSpace(query);
             var has_query_but_no_filter = String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query);
-            
+
             if (has_filter_but_no_query || has_query_but_no_filter) return null;
 
 
@@ -53,27 +52,30 @@ namespace NZWalks.Repository
 
             if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
             {
-                if (filter_property.Equals("name", StringComparison.OrdinalIgnoreCase))
+                if (filter_property.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
                     walks = walks.Where(w => w.Name.Contains(query));
                 }
 
-                if (filter_property.Equals("description", StringComparison.OrdinalIgnoreCase))
+                else if (filter_property.Equals("Description", StringComparison.OrdinalIgnoreCase))
                 {
                     walks = walks.Where(w => w.Description.Contains(query));
                 }
 
-                bool is_number = double.TryParse(query.Trim(), out double result);
-
-                if (filter_property.Equals("length", StringComparison.OrdinalIgnoreCase) && is_number)
+                else if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase))
                 {
-                    walks = walks.Where(w => w.LengthInKM <= result);
+                    bool is_number = double.TryParse(query.Trim(), out double result);
+                    
+                    if (is_number)
+                    {
+                        walks = walks.Where(w => w.LengthInKM <= result);
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
-                else
-                {
-                    return null;
-                } 
-            };
+            }
 
             return await walks.ToListAsync();
         }
