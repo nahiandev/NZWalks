@@ -37,7 +37,8 @@ namespace NZWalks.Repository
             
             return selected_to_delete;
         }
-
+        
+        
         public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null)
         {
             //var walks = await _context.Walks.Include(d => d.Difficulty).Include(r => r.Region)
@@ -50,27 +51,26 @@ namespace NZWalks.Repository
 
             if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
             {
-                if (filter_property.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                if (filter_property.Equals("name", StringComparison.OrdinalIgnoreCase))
                 {
                     walks = walks.Where(w => w.Name.Contains(query));
                 }
 
-                if (filter_property.Equals("Description", StringComparison.OrdinalIgnoreCase))
+                if (filter_property.Equals("description", StringComparison.OrdinalIgnoreCase))
                 {
                     walks = walks.Where(w => w.Description.Contains(query));
                 }
 
                 bool is_number = double.TryParse(query.Trim(), out double result);
 
-                if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase) && is_number)
+                if (filter_property.Equals("length", StringComparison.OrdinalIgnoreCase) && is_number)
                 {
                     walks = walks.Where(w => w.LengthInKM <= result);
                 }
                 else
                 {
                     return null;
-                }
-                    
+                } 
             };
 
             return await walks.ToListAsync();
