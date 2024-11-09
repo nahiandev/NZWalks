@@ -50,20 +50,29 @@ namespace NZWalks.Repository
 
             if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
             {
-                //if (filter_property.Equals("Name", StringComparison.OrdinalIgnoreCase))
-                //{
-                //    walks = walks.Where(w => w.Name.Contains(query));
-                //}
-
-
-
-                walks = filter_property.ToLower() switch
+                if (filter_property.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
-                    "name" => walks.Where(w => w.Name.Contains(query, StringComparison.OrdinalIgnoreCase)),
-                    "description" => walks.Where(w => w.Description.Contains(query, StringComparison.OrdinalIgnoreCase)),
-                    "lengthinkm" => walks.Where(w => w.LengthInKM <= Convert.ToDouble(query.Trim())),
-                    _ => walks
-                };
+                    walks = walks.Where(w => w.Name.Contains(query));
+                }
+
+                if (filter_property.Equals("Description", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(w => w.Description.Contains(query));
+                }
+
+                if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(w => w.LengthInKM <= Convert.ToDouble(query.Trim()));
+                }
+
+
+                //walks = filter_property.ToLower() switch
+                //{
+                //    "name" => walks.Where(w => w.Name.Contains(query, StringComparison.OrdinalIgnoreCase)),
+                //    "description" => walks.Where(w => w.Description.Contains(query, StringComparison.OrdinalIgnoreCase)),
+                //    "lengthinkm" => walks.Where(w => w.LengthInKM <= Convert.ToDouble(query.Trim())),
+                //    _ => walks
+                //};
 
             };
 
