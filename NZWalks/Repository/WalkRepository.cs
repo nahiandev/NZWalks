@@ -41,13 +41,15 @@ namespace NZWalks.Repository
         
         public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null)
         {
-            //var walks = await _context.Walks.Include(d => d.Difficulty).Include(r => r.Region)
-            //    .ToListAsync();
-            //return walks;
+            var has_filter_but_no_query = !String.IsNullOrWhiteSpace(filter_property) && String.IsNullOrWhiteSpace(query);
+            var has_query_but_no_filter = String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query);
+            
+            if (has_filter_but_no_query || has_query_but_no_filter) return null;
 
 
             var walks = _context.Walks.Include(d => d.Difficulty)
                 .Include(r => r.Region).AsNoTracking().AsQueryable();
+
 
             if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
             {
