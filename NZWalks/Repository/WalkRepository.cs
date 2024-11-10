@@ -47,6 +47,7 @@ namespace NZWalks.Repository
 
             if (filter_property is not null && !valid_filter) return null;
             if (valid_filter && query is null) return null;
+            if (filter_property is null && query is not null) return null;
 
             // Filter validation
             IQueryable<Walk> walks = _context.Walks.Include(d => d.Difficulty)

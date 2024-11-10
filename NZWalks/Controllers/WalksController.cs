@@ -26,9 +26,9 @@ namespace NZWalks.Controllers
         {
             var walks = await _walks.GetAllAsync(filter_property, query);
 
-            if (walks is null) return BadRequest();
+            if (walks is null) return BadRequest("Invalid filter property or missing query for the specified filter.");
 
-            if (walks.Count == 0) return NotFound();
+            if (walks.Count == 0) return NotFound("No walks found matching the specified criteria.");
 
             var mapped_walks = _mapper.Map<List<WalkDTO>>(walks);
 
