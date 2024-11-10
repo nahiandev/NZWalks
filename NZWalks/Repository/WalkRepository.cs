@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
 using NZWalks.Models.Domain;
 
@@ -20,7 +21,7 @@ namespace NZWalks.Repository
             var exists = await walks.AnyAsync(_ => _.Id == walk.Id);
 
             if (exists) return null;
-            
+
             await walks.AddAsync(walk);
             await _context.SaveChangesAsync();
             return walk;
@@ -31,29 +32,25 @@ namespace NZWalks.Repository
             var selected_to_delete = await _context.Walks.FindAsync(id);
 
             if (selected_to_delete is null) return null;
-            
-                _context.Walks.Remove(selected_to_delete);
-                await _context.SaveChangesAsync();
-            
+
+            _context.Walks.Remove(selected_to_delete);
+            await _context.SaveChangesAsync();
+
             return selected_to_delete;
         }
 
         public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null)
         {
-            var has_filter_but_no_query = !String.IsNullOrWhiteSpace(filter_property) && String.IsNullOrWhiteSpace(query);
-            var has_query_but_no_filter = String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query);
+            // Parameter validation
+            var filters = new List<string>() { "Name", "Description", "Length" };
+            var valid_filter = filters.Any(x => x.Equals(filter_property, StringComparison.OrdinalIgnoreCase));
 
-            var valid_filters = new List<string>() { "Name", "Description", "Length" };
-
-            var has_invalid_filter = valid_filters.Any(f => f.Equals(filter_property, StringComparison.OrdinalIgnoreCase)) == false;
-
-
-            if (has_filter_but_no_query || has_query_but_no_filter || has_invalid_filter) return null;
-
-
+            if (filter_property is not null && !valid_filter) return null;
+            if (valid_filter && query is null) return null;
+            
+            // Filter validation
             var walks = _context.Walks.Include(d => d.Difficulty)
                 .Include(r => r.Region).AsNoTracking().AsQueryable();
-
 
             if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
             {
@@ -70,15 +67,11 @@ namespace NZWalks.Repository
                 else if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase))
                 {
                     bool is_number = double.TryParse(query.Trim(), out double result);
-                    
+
                     if (is_number)
                     {
                         walks = walks.Where(w => w.LengthInKM <= result);
                     }
-                    //else
-                    //{
-                    //    return null;
-                    //}
                 }
             }
 
@@ -93,7 +86,7 @@ namespace NZWalks.Repository
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (walk is null) return null;
-            
+
             return walk;
         }
 
