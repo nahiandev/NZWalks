@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
 using NZWalks.Models.Domain;
 
@@ -39,10 +38,10 @@ namespace NZWalks.Repository
             return selected_to_delete;
         }
 
-        public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null)
+        public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null, string? order_by = null, bool is_ascending = true)
         {
             // Parameter validation
-            List<string> filters = ["Name", "Description", "Length"];
+            List<string> filters = ["Name", "Length"];
             bool valid_filter = filters.Any(filter => filter.Equals(filter_property, StringComparison.OrdinalIgnoreCase));
 
             if (filter_property is not null && !valid_filter) return null;
@@ -60,11 +59,6 @@ namespace NZWalks.Repository
                     walks = walks.Where(w => w.Name.Contains(query));
                 }
 
-                else if (filter_property.Equals("Description", StringComparison.OrdinalIgnoreCase))
-                {
-                    walks = walks.Where(w => w.Description.Contains(query));
-                }
-
                 else if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase))
                 {
                     bool is_number = double.TryParse(query.Trim(), out double result);
@@ -73,6 +67,20 @@ namespace NZWalks.Repository
                     {
                         walks = walks.Where(w => w.LengthInKM <= result);
                     }
+                }
+            }
+
+            //Sorting
+            if (order_by is not null)
+            {
+                if (order_by.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                   walks = is_ascending ? walks.OrderBy(w => w.Name) : walks.OrderByDescending(w => w.Name);
+                }
+                
+                else if (order_by.Equals("Length", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = is_ascending ? walks.OrderBy(w => w.LengthInKM) : walks.OrderByDescending(w => w.LengthInKM);
                 }
             }
 

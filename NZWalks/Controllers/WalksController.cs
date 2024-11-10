@@ -22,9 +22,9 @@ namespace NZWalks.Controllers
         
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] string? filter_property = null, [FromQuery] string? query = null)
+        public async Task<IActionResult> GetAll([FromQuery] string? filter_property = null, [FromQuery] string? query = null, [FromQuery] string? order_by = null, [FromQuery] bool? is_ascending = true)
         {
-            var walks = await _walks.GetAllAsync(filter_property, query);
+            var walks = await _walks.GetAllAsync(filter_property, query, order_by, is_ascending ?? true);
 
             if (walks is null) return BadRequest("Invalid filter property or missing query for the specified filter.");
 
