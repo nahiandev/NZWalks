@@ -50,7 +50,7 @@ namespace NZWalks.Repository
             IQueryable<Walk> walks = _context.Walks.Include(d => d.Difficulty)
                 .Include(r => r.Region).AsNoTracking().AsQueryable();
 
-            if (filter_property is not null && query is not null)
+            if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
             {
                 if (filter_property.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
@@ -60,17 +60,24 @@ namespace NZWalks.Repository
                 else if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase))
                 {
                     bool is_number = double.TryParse(query.Trim(), out double result);
-                    walks = is_number ? walks.Where(w => w.LengthInKM <= result) : walks;
+
+                    if (is_number)
+                    {
+                        walks = walks.Where(w => w.LengthInKM <= result);
+                    }
+                    return null;
                 }
                 
                 else if (filter_property.Equals("Difficulty", StringComparison.OrdinalIgnoreCase))
                 {
                     walks = walks.Where(w => w.Difficulty.Name.Contains(query));
+                    
                 }
             }
 
             //Sorting
-            if (order_by is not null)
+            int count = walks.Count();
+            if (order_by is not null && count > 0)
             {
                 if (order_by.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
