@@ -28,6 +28,8 @@ namespace NZWalks.Controllers
 
             if (walks is null) return BadRequest();
 
+            if (walks.Count == 0) return NotFound();
+
             var mapped_walks = _mapper.Map<List<WalkDTO>>(walks);
 
             return Ok(mapped_walks);

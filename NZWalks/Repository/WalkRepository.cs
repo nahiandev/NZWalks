@@ -43,7 +43,12 @@ namespace NZWalks.Repository
             var has_filter_but_no_query = !String.IsNullOrWhiteSpace(filter_property) && String.IsNullOrWhiteSpace(query);
             var has_query_but_no_filter = String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query);
 
-            if (has_filter_but_no_query || has_query_but_no_filter) return null;
+            var valid_filters = new List<string>() { "Name", "Description", "Length" };
+
+            var has_invalid_filter = valid_filters.Any(f => f.Equals(filter_property, StringComparison.OrdinalIgnoreCase)) == false;
+
+
+            if (has_filter_but_no_query || has_query_but_no_filter || has_invalid_filter) return null;
 
 
             var walks = _context.Walks.Include(d => d.Difficulty)
@@ -70,10 +75,10 @@ namespace NZWalks.Repository
                     {
                         walks = walks.Where(w => w.LengthInKM <= result);
                     }
-                    else
-                    {
-                        return null;
-                    }
+                    //else
+                    //{
+                    //    return null;
+                    //}
                 }
             }
 

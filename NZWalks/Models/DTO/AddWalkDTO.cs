@@ -1,6 +1,4 @@
-﻿using NZWalks.Models.Domain;
-
-namespace NZWalks.Models.DTO
+﻿namespace NZWalks.Models.DTO
 {
     public class AddWalkDTO
     {
