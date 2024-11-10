@@ -42,14 +42,14 @@ namespace NZWalks.Repository
         public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null)
         {
             // Parameter validation
-            var filters = new List<string>() { "Name", "Description", "Length" };
-            var valid_filter = filters.Any(x => x.Equals(filter_property, StringComparison.OrdinalIgnoreCase));
+            List<string> filters = ["Name", "Description", "Length"];
+            bool valid_filter = filters.Any(filter => filter.Equals(filter_property, StringComparison.OrdinalIgnoreCase));
 
             if (filter_property is not null && !valid_filter) return null;
             if (valid_filter && query is null) return null;
-            
+
             // Filter validation
-            var walks = _context.Walks.Include(d => d.Difficulty)
+            IQueryable<Walk> walks = _context.Walks.Include(d => d.Difficulty)
                 .Include(r => r.Region).AsNoTracking().AsQueryable();
 
             if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
