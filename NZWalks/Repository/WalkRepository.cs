@@ -41,7 +41,7 @@ namespace NZWalks.Repository
         public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null, string? order_by = null, bool is_ascending = true)
         {
             // Parameter validation
-            List<string> filters = ["Name", "Length"];
+            List<string> filters = ["Name", "Length", "Difficulty"];
             bool valid_filter = filters.Any(filter => filter.Equals(filter_property, StringComparison.OrdinalIgnoreCase));
 
             if (filter_property is not null && !valid_filter) return null;
@@ -58,15 +58,16 @@ namespace NZWalks.Repository
                 {
                     walks = walks.Where(w => w.Name.Contains(query));
                 }
-
+                
                 else if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase))
                 {
                     bool is_number = double.TryParse(query.Trim(), out double result);
-
-                    if (is_number)
-                    {
-                        walks = walks.Where(w => w.LengthInKM <= result);
-                    }
+                    walks = is_number ? walks.Where(w => w.LengthInKM <= result) : walks;
+                }
+                
+                else if (filter_property.Equals("Difficulty", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(w => w.Difficulty.Name.Contains(query));
                 }
             }
 

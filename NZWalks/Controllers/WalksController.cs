@@ -6,7 +6,7 @@ using NZWalks.Repository;
 
 namespace NZWalks.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("endpoints/[controller]")]
     [ApiController]
     public class WalksController : ControllerBase
     {
@@ -18,8 +18,6 @@ namespace NZWalks.Controllers
             _mapper = mapper;
             _walks = walks;
         }
-
-        
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? filter_property = null, [FromQuery] string? query = null, [FromQuery] string? order_by = null, [FromQuery] bool? is_ascending = true)
