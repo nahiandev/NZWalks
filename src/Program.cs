@@ -15,6 +15,7 @@ namespace NZWalks
             var connection_string = builder.Configuration.GetConnectionString("NZWlaksConnection");
             builder.Services.AddDbContext<NZWalksDbContext>(options => options.UseSqlServer(connection_string));
             
+            builder.Services.AddAutoMapper(typeof(MapperProfile));
             builder.Services.AddScoped<IRegionRepository, RegionRepository>();
             builder.Services.AddScoped<IWalkRepository, WalkRepository>();
 
@@ -35,7 +36,7 @@ namespace NZWalks
                 rate_limit.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             });
 
-            builder.Services.AddAutoMapper(typeof(MapperProfile));
+            
 
             var app = builder.Build();
             
