@@ -8,10 +8,7 @@ namespace NZWalks.Repository
     {
         private readonly NZWalksDbContext _context;
 
-        public WalkRepository(NZWalksDbContext context)
-        {
-            _context = context;
-        }
+        public WalkRepository(NZWalksDbContext context) => _context = context;
 
         public async Task<Walk> CreateAsync(Walk walk)
         {
@@ -38,7 +35,10 @@ namespace NZWalks.Repository
             return selected_to_delete;
         }
 
-        public async Task<List<Walk>> GetAllAsync(string? filter_property = null, string? query = null, string? order_by = null, bool is_ascending = true)
+        public async Task<List<Walk>> GetAllAsync(string? filter_property = null, 
+            string? query = null, string? order_by = null, 
+            bool is_ascending = true, int page_number = 1,
+            int page_size = 1000)
         {
             List<string> filters = ["Name", "Length", "Difficulty"];
             bool valid_filter = filters.Any(filter => filter.Equals(filter_property, StringComparison.OrdinalIgnoreCase));
@@ -90,7 +90,10 @@ namespace NZWalks.Repository
                 }
             }
 
-            return await walks.ToListAsync();
+            // Pagination
+            int skip_results = (page_number - 1) * page_size;
+
+            return await walks.Skip(skip_results).Take(page_size).ToListAsync();
         }
 
         public async Task<Walk?> GetByIdAsync(Guid id)
