@@ -6,9 +6,9 @@ namespace NZWalks.Repository
 {
     public class RegionRepository : IRegionRepository
     {
-        private readonly NZWalksDbContext _context;
+        private readonly NZWalksRecordsDbContext _context;
 
-        public RegionRepository(NZWalksDbContext context)
+        public RegionRepository(NZWalksRecordsDbContext context)
         {
             _context = context;
         }

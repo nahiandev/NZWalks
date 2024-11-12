@@ -6,9 +6,9 @@ namespace NZWalks.Repository
 {
     public class WalkRepository : IWalkRepository
     {
-        private readonly NZWalksDbContext _context;
+        private readonly NZWalksRecordsDbContext _context;
 
-        public WalkRepository(NZWalksDbContext context) => _context = context;
+        public WalkRepository(NZWalksRecordsDbContext context) => _context = context;
 
         public async Task<Walk> CreateAsync(Walk walk)
         {
