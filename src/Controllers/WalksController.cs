@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using NZWalks.Models.Domain;
 using NZWalks.Models.DTO;
 using NZWalks.Repository;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace NZWalks.Controllers
 {
@@ -22,6 +23,7 @@ namespace NZWalks.Controllers
 
         [HttpGet]
         [Authorize]
+        [EnableRateLimiting("fixed")]
         public async Task<IActionResult> GetAll([FromQuery] string? filter_property = null, 
             [FromQuery] string? query = null, [FromQuery] string? order_by = null, 
             [FromQuery] bool? is_ascending = true, [FromQuery] int page_number = 1, 
