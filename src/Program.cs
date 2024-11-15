@@ -6,6 +6,7 @@ using NZWalks.DataMapper;
 using NZWalks.Repository;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace NZWalks
 {
@@ -43,6 +44,21 @@ namespace NZWalks
                 });
 
                 rate_limit.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            });
+
+            builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>()
+                .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("NZWalks")
+                .AddEntityFrameworkStores<NZWalksAuthDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.Configure<IdentityOptions>(security =>
+            {
+                security.Password.RequireDigit = false;
+                security.Password.RequireLowercase = false;
+                security.Password.RequireUppercase = false;
+                security.Password.RequireNonAlphanumeric = false;
+                security.Password.RequiredLength = 6;
+                security.Password.RequiredUniqueChars = 1;
             });
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

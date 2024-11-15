@@ -22,7 +22,7 @@ namespace NZWalks.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        
         [EnableRateLimiting("fixed")]
         public async Task<IActionResult> GetAll([FromQuery] string? filter_property = null, 
             [FromQuery] string? query = null, [FromQuery] string? order_by = null, 
