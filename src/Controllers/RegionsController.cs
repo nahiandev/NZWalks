@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NZWalks.Models.Domain;
 using NZWalks.Models.DTO;
 using NZWalks.Repository;
@@ -8,9 +9,10 @@ using NZWalks.Repository;
 
 namespace NZWalks.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("endpoints/[controller]")]
     [ApiController]
     [Authorize]
+    [EnableRateLimiting("fixed")]
     public class RegionsController : ControllerBase
     {
 
@@ -98,7 +100,6 @@ namespace NZWalks.Controllers
 
 
         [HttpDelete]
-
         [Route("{id:Guid}")]
 
         public async Task<IActionResult> Delete([FromRoute] Guid id)
