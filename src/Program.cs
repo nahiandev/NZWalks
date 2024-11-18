@@ -46,7 +46,11 @@ namespace NZWalks
                 rate_limit.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             });
 
-            builder.Services.AddIdentityCore<IdentityUser>().AddRoles<IdentityRole>()
+            
+
+
+            builder.Services.AddIdentityCore<IdentityUser>()
+                .AddRoles<IdentityRole>()
                 .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("NZWalks")
                 .AddEntityFrameworkStores<NZWalksAuthDbContext>()
                 .AddDefaultTokenProviders();
@@ -60,6 +64,7 @@ namespace NZWalks
                 security.Password.RequiredLength = 6;
                 security.Password.RequiredUniqueChars = 1;
             });
+
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
