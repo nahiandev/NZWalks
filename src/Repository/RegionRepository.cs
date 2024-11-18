@@ -20,10 +20,11 @@ namespace NZWalks.Repository
 
             if (regions.Count > 0)
             {
-                foreach (var region in regions)
-                {
-                    context.Remove(region);
-                }
+                context.RemoveRange(regions);
+                //foreach (var region in regions)
+                //{
+                //    context.Remove(region);
+                //}
 
                 await _context.SaveChangesAsync();
             }
