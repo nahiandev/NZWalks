@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.Models.DTO;
@@ -33,9 +32,9 @@ namespace NZWalks.Controllers
 
             if(user.Succeeded)
             {
-                var roles_length = new_user.Roles.Length;
+                var roles_count = new_user.Roles.Length;
 
-                if(roles_length > 0)
+                if(roles_count > 0)
                 {
                     user = await _user_manager.AddToRolesAsync(identity_user, new_user.Roles);
                     
