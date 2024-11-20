@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using NZWalks.Models.Domain;
 using NZWalks.Models.DTO;
 
@@ -17,6 +18,7 @@ namespace NZWalks.DataMapper
             CreateMap<Walk, WalkDTO>().ReverseMap();
             CreateMap<Difficulty, DifficultyDTO>().ReverseMap();
             CreateMap<UpdateWalkDTO, Walk>().ReverseMap();
+            CreateMap<IdentityUser, RegisterDTO>().ReverseMap();
         }
     }
 }
