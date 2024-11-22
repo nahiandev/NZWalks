@@ -28,8 +28,7 @@ namespace NZWalks
             builder.Services.AddAutoMapper(typeof(MapperProfile));
             builder.Services.AddScoped<IRegionRepository, RegionRepository>();
             builder.Services.AddScoped<IWalkRepository, WalkRepository>();
-
-
+            
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -45,10 +44,7 @@ namespace NZWalks
 
                 rate_limit.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             });
-
             
-
-
             builder.Services.AddIdentityCore<IdentityUser>()
                 .AddRoles<IdentityRole>()
                 .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("NZWalks")
