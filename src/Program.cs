@@ -12,6 +12,14 @@ namespace NZWalks
 {
     public class Program
     {
+        public NZWalksRecordsDbContext NZWalksRecordsDbContext
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);

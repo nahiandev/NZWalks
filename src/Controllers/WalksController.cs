@@ -8,6 +8,7 @@ namespace NZWalks.Controllers
 {
     [Route("endpoints/[controller]")]
     [ApiController]
+    
     public class WalksController : ControllerBase
     {
         private readonly IMapper _mapper;
