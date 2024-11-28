@@ -7,19 +7,12 @@ using NZWalks.Repository;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
 
 namespace NZWalks
 {
     public class Program
     {
-        public NZWalksRecordsDbContext NZWalksRecordsDbContext
-        {
-            get => default;
-            set
-            {
-            }
-        }
-
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -97,6 +90,12 @@ namespace NZWalks
             app.UseRateLimiter();
             
             app.MapControllers();
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
+                RequestPath = "/Files"
+            });
 
             app.Run();
         }
