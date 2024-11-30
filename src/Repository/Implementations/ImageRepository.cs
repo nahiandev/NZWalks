@@ -18,7 +18,7 @@ namespace NZWalks.Repository.Implementations
         }
         public async Task<Image> UploadAsync(Image image)
         {
-            var local_file_path = Path.Combine(_environment.ContentRootPath, "Images", $"{image.Name}{image.Extension}");
+            var local_file_path = Path.Combine(_environment.ContentRootPath, "StaticFiles", $"{image.Name}{image.Extension}");
 
             //using FileStream stream = new(local_file_path, FileMode.Create);
             //await image.File.CopyToAsync(stream);
@@ -26,7 +26,7 @@ namespace NZWalks.Repository.Implementations
             await SaveFileAsync(image.File, local_file_path);
 
 
-            var file_url = $"{_accessor.HttpContext!.Request.Scheme}://{_accessor.HttpContext.Request.Host}{_accessor.HttpContext.Request.PathBase}/Images/{image.Name}{image.Extension}";
+            var file_url = $"{_accessor.HttpContext!.Request.Scheme}://{_accessor.HttpContext.Request.Host}{_accessor.HttpContext.Request.PathBase}/images/{image.Name}{image.Extension}";
 
             image.PathToFile = file_url;
 
