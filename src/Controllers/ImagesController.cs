@@ -22,8 +22,6 @@ namespace NZWalks.Controllers
         [Route("upload")]
         public async Task<IActionResult> Upload([FromForm] ImageUploadDTO image_to_upload)
         {
-            long size = 1024;
-
             var validated = UploadValidated(image_to_upload);
 
             if (!validated) return BadRequest(ModelState);

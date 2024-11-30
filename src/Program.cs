@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
 using NZWalks.Repository.Interfaces;
 using NZWalks.Repository.Implementations;
+using Serilog;
 
 namespace NZWalks
 {
@@ -17,6 +18,17 @@ namespace NZWalks
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Logging.ClearProviders();
+
+            string log_file = @"Logs\app_log.log";
+
+            var logger = new LoggerConfiguration().WriteTo
+                .Console().WriteTo
+                .File(log_file, rollingInterval: RollingInterval.Minute)
+                .MinimumLevel.Warning().CreateLogger();
+
+            builder.Services.AddSerilog(logger);
             
             var records_connection_string = builder.Configuration.GetConnectionString("NZWlaksConnection");
             var auth_connection_string = builder.Configuration.GetConnectionString("NZWlaksAuthConnection");
