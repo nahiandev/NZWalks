@@ -28,12 +28,10 @@ namespace NZWalks
             builder.Services.AddDbContext<NZWalksAuthDbContext>(options => options.UseSqlServer(auth_connection_string));
 
             builder.Services.AddAutoMapper(typeof(MapperProfile));
-
-
+            
             builder.Services.AddScoped<IRegionRepository, RegionRepository>();
             builder.Services.AddScoped<IWalkRepository, WalkRepository>();
             builder.Services.AddScoped<IImageRepository, ImageRepository>();
-
             
             builder.Services.AddControllers();
             builder.Services.AddHttpContextAccessor();

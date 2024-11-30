@@ -26,9 +26,11 @@ namespace NZWalks.Repository.Implementations
             if(image_to_delete is null) return Task.FromResult<Image>(null!).Result;
             
             var local_file_path = Path.Combine(_environment.ContentRootPath, "StaticFiles", $"{image_to_delete.Name}{image_to_delete.Extension}");
-            
-            if(File.Exists(local_file_path)) File.Delete(local_file_path);
-            
+
+            // if(File.Exists(local_file_path)) File.Delete(local_file_path);
+
+            DeleteFile(local_file_path);
+
             _context.Images.Remove(image_to_delete);
 
             await _context.SaveChangesAsync();
@@ -38,11 +40,11 @@ namespace NZWalks.Repository.Implementations
 
         public async Task<Image> UploadAsync(Image image)
         {
-            var local_file_path = Path.Combine(_environment.ContentRootPath, "StaticFiles", $"{image.Name}{image.Extension}");
+            var local_file_path = Path.Combine(_environment.ContentRootPath, "StaticFiles", $"{image.Name}{image.Extension.ToLower()}");
 
             await SaveFileAsync(image.File, local_file_path);
 
-            var file_url = $"{_accessor.HttpContext!.Request.Scheme}://{_accessor.HttpContext.Request.Host}{_accessor.HttpContext.Request.PathBase}/images/{image.Name}{image.Extension}";
+            var file_url = $"{_accessor.HttpContext!.Request.Scheme}://{_accessor.HttpContext.Request.Host}{_accessor.HttpContext.Request.PathBase}/images/{image.Name}{image.Extension.ToLower()}";
 
             image.PathToFile = file_url;
 
@@ -53,6 +55,10 @@ namespace NZWalks.Repository.Implementations
             return image;
         }
 
+        private void DeleteFile(string local_file_path)
+        {
+            if(File.Exists(local_file_path)) File.Delete(local_file_path);
+        }
         private async Task SaveFileAsync(IFormFile file, string local_file_path)
         {
             using FileStream stream = new(local_file_path, FileMode.Create);

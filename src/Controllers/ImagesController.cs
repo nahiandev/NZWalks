@@ -24,7 +24,7 @@ namespace NZWalks.Controllers
         {
             long size = 1024;
 
-            var validated = UploadValidated(image_to_upload, size);
+            var validated = UploadValidated(image_to_upload);
 
             if (!validated) return BadRequest(ModelState);
 
@@ -65,7 +65,7 @@ namespace NZWalks.Controllers
 
             var incoming_file_extension = Path.GetExtension(image_to_upload.File.FileName);
 
-            if (!valid_extensions.Contains(incoming_file_extension))
+            if (!valid_extensions.Contains(incoming_file_extension.ToLower()))
             {
                 ModelState.AddModelError("File", "Invalid file type");
                 return false;
