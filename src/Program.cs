@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
 using NZWalks.DataMapper;
-using NZWalks.Repository;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
+using NZWalks.Repository.Interfaces;
+using NZWalks.Repository.Implementations;
 
 namespace NZWalks
 {
@@ -94,7 +95,7 @@ namespace NZWalks
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles")),
-                RequestPath = "/Files"
+                RequestPath = "/images"
             });
 
             app.Run();

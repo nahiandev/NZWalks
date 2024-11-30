@@ -1,6 +1,6 @@
 ﻿using NZWalks.Models.Domain;
 
-namespace NZWalks.Repository
+namespace NZWalks.Repository.Interfaces
 {
     public interface IRegionRepository
     {

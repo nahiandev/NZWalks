@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using NZWalks.Models.Domain;
 using NZWalks.Models.DTO;
-using NZWalks.Repository;
+using NZWalks.Repository.Interfaces;
 
 
 namespace NZWalks.Controllers

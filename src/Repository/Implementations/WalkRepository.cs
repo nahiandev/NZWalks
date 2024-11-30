@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
 using NZWalks.Models.Domain;
+using NZWalks.Repository.Interfaces;
 
-namespace NZWalks.Repository
+namespace NZWalks.Repository.Implementations
 {
     public class WalkRepository : IWalkRepository
     {
@@ -35,8 +36,8 @@ namespace NZWalks.Repository
             return selected_to_delete;
         }
 
-        public async Task<List<Walk>> GetAllAsync(string? filter_property = null, 
-            string? query = null, string? order_by = null, 
+        public async Task<List<Walk>> GetAllAsync(string? filter_property = null,
+            string? query = null, string? order_by = null,
             bool is_ascending = true, int page_number = 1,
             int page_size = 1000)
         {
@@ -50,13 +51,13 @@ namespace NZWalks.Repository
             IQueryable<Walk> walks = _context.Walks.Include(d => d.Difficulty)
                 .Include(r => r.Region).AsNoTracking().AsQueryable();
 
-            if (!String.IsNullOrWhiteSpace(filter_property) && !String.IsNullOrWhiteSpace(query))
+            if (!string.IsNullOrWhiteSpace(filter_property) && !string.IsNullOrWhiteSpace(query))
             {
                 if (filter_property.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
                     walks = walks.Where(w => w.Name.Contains(query));
                 }
-                
+
                 else if (filter_property.Equals("Length", StringComparison.OrdinalIgnoreCase))
                 {
                     bool is_number = double.TryParse(query.Trim(), out double result);
@@ -67,11 +68,11 @@ namespace NZWalks.Repository
                     }
                     return null;
                 }
-                
+
                 else if (filter_property.Equals("Difficulty", StringComparison.OrdinalIgnoreCase))
                 {
                     walks = walks.Where(w => w.Difficulty.Name.Contains(query));
-                    
+
                 }
             }
 
@@ -81,9 +82,9 @@ namespace NZWalks.Repository
             {
                 if (order_by.Equals("Name", StringComparison.OrdinalIgnoreCase))
                 {
-                   walks = is_ascending ? walks.OrderBy(w => w.Name) : walks.OrderByDescending(w => w.Name);
+                    walks = is_ascending ? walks.OrderBy(w => w.Name) : walks.OrderByDescending(w => w.Name);
                 }
-                
+
                 else if (order_by.Equals("Length", StringComparison.OrdinalIgnoreCase))
                 {
                     walks = is_ascending ? walks.OrderBy(w => w.LengthInKM) : walks.OrderByDescending(w => w.LengthInKM);
