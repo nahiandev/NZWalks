@@ -22,7 +22,9 @@ namespace NZWalks.Controllers
         [Route("upload")]
         public async Task<IActionResult> Upload([FromForm] ImageUploadDTO image_to_upload)
         {
-            var validated = UploadValidated(image_to_upload);
+            long size = 1024;
+
+            var validated = UploadValidated(image_to_upload, size);
 
             if (!validated) return BadRequest(ModelState);
 
@@ -49,15 +51,15 @@ namespace NZWalks.Controllers
 
             if (removed_image is null)
             {
-                Response.Headers.Add("X-Custom-Message", "Image not found");
+                Response.Headers.Append("X-Custom-Message", "Image not found");
                 return BadRequest("Image not found");
             }
 
-            Response.Headers.Add("X-Custom-Message", "Image successfully removed"); 
+            Response.Headers.Append("X-Custom-Message", "Image successfully removed"); 
             return NoContent();
         }
 
-        private bool UploadValidated(ImageUploadDTO image_to_upload)
+        private bool UploadValidated(ImageUploadDTO image_to_upload, long max_size = 10485760)
         {
             List<string> valid_extensions = [".jpg", ".png", ".jpeg"];
 
@@ -69,7 +71,7 @@ namespace NZWalks.Controllers
                 return false;
             }
 
-            if (image_to_upload.File.Length > 10485760)
+            if (image_to_upload.File.Length > max_size)
             {
                 ModelState.AddModelError("File", "File size is too large");
                 return false;
