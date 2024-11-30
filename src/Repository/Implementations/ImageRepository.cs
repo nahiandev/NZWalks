@@ -1,6 +1,7 @@
 ﻿using NZWalks.Data;
 using NZWalks.Repository.Interfaces;
 using NZWalks.Models.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace NZWalks.Repository.Implementations
 {
@@ -10,27 +11,43 @@ namespace NZWalks.Repository.Implementations
         private readonly IHttpContextAccessor _accessor;
         private readonly NZWalksRecordsDbContext _context;
 
-        public ImageRepository(IWebHostEnvironment environment, IHttpContextAccessor accessor, NZWalksRecordsDbContext context)
+        public ImageRepository(IWebHostEnvironment environment, 
+            IHttpContextAccessor accessor, NZWalksRecordsDbContext context)
         {
             _environment = environment;
             _accessor = accessor;
             _context = context;
         }
+
+        public async Task<Image> RemoveAsync(string name)
+        {
+            var image_to_delete = await _context.Images.FirstOrDefaultAsync(img => img.Name == name);
+
+            if(image_to_delete is null) return Task.FromResult<Image>(null!).Result;
+            
+            var local_file_path = Path.Combine(_environment.ContentRootPath, "StaticFiles", $"{image_to_delete.Name}{image_to_delete.Extension}");
+            
+            if(File.Exists(local_file_path)) File.Delete(local_file_path);
+            
+            _context.Images.Remove(image_to_delete);
+
+            await _context.SaveChangesAsync();
+
+            return image_to_delete;
+        }
+
         public async Task<Image> UploadAsync(Image image)
         {
             var local_file_path = Path.Combine(_environment.ContentRootPath, "StaticFiles", $"{image.Name}{image.Extension}");
 
-            //using FileStream stream = new(local_file_path, FileMode.Create);
-            //await image.File.CopyToAsync(stream);
-
             await SaveFileAsync(image.File, local_file_path);
-
 
             var file_url = $"{_accessor.HttpContext!.Request.Scheme}://{_accessor.HttpContext.Request.Host}{_accessor.HttpContext.Request.PathBase}/images/{image.Name}{image.Extension}";
 
             image.PathToFile = file_url;
 
             _context.Images.Add(image);
+
             await _context.SaveChangesAsync();
 
             return image;

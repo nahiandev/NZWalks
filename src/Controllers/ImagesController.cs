@@ -40,6 +40,23 @@ namespace NZWalks.Controllers
             return Ok(converted_domain_image);
         }
 
+
+        [HttpDelete]
+        //[Route("{id}")]
+        public async Task<IActionResult> Remove([FromForm] string name)
+        {
+            var removed_image = await _repository.RemoveAsync(name);
+
+            if (removed_image is null)
+            {
+                Response.Headers.Add("X-Custom-Message", "Image not found");
+                return BadRequest("Image not found");
+            }
+
+            Response.Headers.Add("X-Custom-Message", "Image successfully removed"); 
+            return NoContent();
+        }
+
         private bool UploadValidated(ImageUploadDTO image_to_upload)
         {
             List<string> valid_extensions = [".jpg", ".png", ".jpeg"];
@@ -52,7 +69,7 @@ namespace NZWalks.Controllers
                 return false;
             }
 
-            if (image_to_upload.File.Length > 1048576)
+            if (image_to_upload.File.Length > 10485760)
             {
                 ModelState.AddModelError("File", "File size is too large");
                 return false;
