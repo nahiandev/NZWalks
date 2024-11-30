@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.Models.Domain;
 using NZWalks.Models.DTO;
+using NZWalks.Repository.Interfaces;
 
 namespace NZWalks.Controllers
 {
@@ -9,6 +10,14 @@ namespace NZWalks.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
+        private readonly IImageRepository _repository;
+
+        public ImagesController(IImageRepository repository)
+        {
+            _repository = repository;
+        }
+
+
         [HttpPost]
         [Route("upload")]
         public async Task<IActionResult> Upload([FromForm] ImageUploadDTO image_to_upload)
@@ -26,8 +35,9 @@ namespace NZWalks.Controllers
                 Description = image_to_upload.Description
             };
             
+            await _repository.UploadAsync(converted_domain_image);
 
-            return Ok();
+            return Ok(converted_domain_image);
         }
 
         private bool UploadValidated(ImageUploadDTO image_to_upload)
