@@ -10,6 +10,7 @@ using Microsoft.Extensions.FileProviders;
 using NZWalks.Repository.Interfaces;
 using NZWalks.Repository.Implementations;
 using Serilog;
+using Scalar.AspNetCore;
 
 namespace NZWalks
 {
@@ -21,15 +22,16 @@ namespace NZWalks
 
             builder.Logging.ClearProviders();
 
-            string log_file = @"Logs\app_log.log";
+            string log_file = @"Logs\app.log";
 
-            var logger = new LoggerConfiguration().WriteTo
-                .Console().WriteTo
-                .File(log_file, rollingInterval: RollingInterval.Minute)
-                .MinimumLevel.Warning().CreateLogger();
+            var logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File(log_file, rollingInterval: RollingInterval.Minute)
+                .MinimumLevel.Information()
+                .CreateLogger();
 
             builder.Services.AddSerilog(logger);
-            
+
             var records_connection_string = builder.Configuration.GetConnectionString("NZWlaksConnection");
             var auth_connection_string = builder.Configuration.GetConnectionString("NZWlaksAuthConnection");
             var issuer = builder.Configuration["Jwt:Issuer"];
@@ -40,17 +42,20 @@ namespace NZWalks
             builder.Services.AddDbContext<NZWalksAuthDbContext>(options => options.UseSqlServer(auth_connection_string));
 
             builder.Services.AddAutoMapper(typeof(MapperProfile));
-            
+
             builder.Services.AddScoped<IRegionRepository, RegionRepository>();
             builder.Services.AddScoped<IWalkRepository, WalkRepository>();
             builder.Services.AddScoped<IImageRepository, ImageRepository>();
-            
+
             builder.Services.AddControllers();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddOpenApi();
+
+           
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-    
+            // builder.Services.AddSwaggerGen();
+
             builder.Services.AddRateLimiter(rate_limit =>
             {
                 rate_limit.AddFixedWindowLimiter("fixed", options =>
@@ -62,7 +67,7 @@ namespace NZWalks
 
                 rate_limit.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             });
-            
+
             builder.Services.AddIdentityCore<IdentityUser>()
                 .AddRoles<IdentityRole>()
                 .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("NZWalks")
@@ -78,7 +83,6 @@ namespace NZWalks
                 security.Password.RequiredLength = 6;
                 security.Password.RequiredUniqueChars = 1;
             });
-
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -96,8 +100,12 @@ namespace NZWalks
                 });
 
             var app = builder.Build();
-            
-            InitializeSwagger(app);
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi();
+                app.MapScalarApiReference();
+            }
 
             app.UseHttpsRedirection();
 
@@ -105,7 +113,7 @@ namespace NZWalks
             app.UseAuthorization();
 
             app.UseRateLimiter();
-            
+
             app.MapControllers();
 
             app.UseStaticFiles(new StaticFileOptions()
@@ -115,15 +123,6 @@ namespace NZWalks
             });
 
             app.Run();
-        }
-
-        private static void InitializeSwagger(WebApplication app)
-        {
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
         }
     }
 }

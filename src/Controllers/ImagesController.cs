@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NZWalks.Models.Domain;
 using NZWalks.Models.DTO;
 using NZWalks.Repository.Interfaces;
@@ -11,10 +10,12 @@ namespace NZWalks.Controllers
     public class ImagesController : ControllerBase
     {
         private readonly IImageRepository _repository;
+        private readonly ILogger<ImagesController> _logger;
 
-        public ImagesController(IImageRepository repository)
+        public ImagesController(IImageRepository repository, ILogger<ImagesController> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
 
@@ -22,6 +23,8 @@ namespace NZWalks.Controllers
         [Route("upload")]
         public async Task<IActionResult> Upload([FromForm] ImageUploadDTO image_to_upload)
         {
+            _logger.LogInformation("This is the starting of the Upload method");
+         
             var validated = UploadValidated(image_to_upload);
 
             if (!validated) return BadRequest(ModelState);
@@ -36,6 +39,8 @@ namespace NZWalks.Controllers
             };
             
             await _repository.UploadAsync(converted_domain_image);
+
+            _logger.LogInformation("This is the end of the Upload method");
 
             return Ok(converted_domain_image);
         }
