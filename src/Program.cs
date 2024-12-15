@@ -10,7 +10,7 @@ using Microsoft.Extensions.FileProviders;
 using NZWalks.Repository.Interfaces;
 using NZWalks.Repository.Implementations;
 using Serilog;
-using Scalar.AspNetCore;
+
 
 namespace NZWalks
 {
@@ -49,12 +49,12 @@ namespace NZWalks
 
             builder.Services.AddControllers();
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddOpenApi();
+            // builder.Services.AddOpenApi();
 
            
 
             builder.Services.AddEndpointsApiExplorer();
-            // builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen();
 
             builder.Services.AddRateLimiter(rate_limit =>
             {
@@ -103,8 +103,8 @@ namespace NZWalks
 
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
-                app.MapScalarApiReference();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
