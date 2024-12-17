@@ -102,7 +102,7 @@ namespace NZWalks.Repository.Implementations
             var walk = await _context.Walks
                 .Include(d => d.Difficulty)
                 .Include(r => r.Region)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(w => w.Id == id);
 
             if (walk is null) return null;
 
@@ -113,10 +113,8 @@ namespace NZWalks.Repository.Implementations
         {
             var walk = await _context.Walks.FindAsync(id);
 
-            if (walk is null)
-            {
-                return null;
-            }
+            if (walk is null) return null;
+
 
             walk.Name = new_walk.Name;
             walk.Description = new_walk.Description;
@@ -124,6 +122,8 @@ namespace NZWalks.Repository.Implementations
             walk.WalkImageUrl = new_walk.WalkImageUrl;
             walk.DifficultyId = new_walk.DifficultyId;
             walk.RegionId = new_walk.RegionId;
+
+
 
             await _context.SaveChangesAsync();
 
