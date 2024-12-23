@@ -11,7 +11,7 @@ namespace NZWalks.Repository.Implementations
         private readonly IHttpContextAccessor _accessor;
         private readonly NZWalksRecordsDbContext _context;
 
-        public ImageRepository(IWebHostEnvironment environment, 
+        public ImageRepository(IWebHostEnvironment environment,
             IHttpContextAccessor accessor, NZWalksRecordsDbContext context)
         {
             _environment = environment;
@@ -23,11 +23,9 @@ namespace NZWalks.Repository.Implementations
         {
             var image_to_delete = await _context.Images.FirstOrDefaultAsync(img => img.Name == name);
 
-            if(image_to_delete is null) return Task.FromResult<Image>(null!).Result;
-            
-            var local_file_path = Path.Combine(_environment.ContentRootPath, "StaticFiles", $"{image_to_delete.Name}{image_to_delete.Extension}");
+            if (image_to_delete is null) return Task.FromResult<Image>(null!).Result;
 
-            // if(File.Exists(local_file_path)) File.Delete(local_file_path);
+            var local_file_path = Path.Combine(_environment.ContentRootPath, "StaticFiles", $"{image_to_delete.Name}{image_to_delete.Extension}");
 
             DeleteFile(local_file_path);
 
@@ -57,7 +55,7 @@ namespace NZWalks.Repository.Implementations
 
         private void DeleteFile(string local_file_path)
         {
-            if(File.Exists(local_file_path)) File.Delete(local_file_path);
+            if (File.Exists(local_file_path)) File.Delete(local_file_path);
         }
         private async Task SaveFileAsync(IFormFile file, string local_file_path)
         {

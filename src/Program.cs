@@ -38,7 +38,7 @@ namespace NZWalks
             var audience = builder.Configuration["Jwt:Audience"];
             var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
 
-            builder.Services.AddDbContext<NZWalksRecordsDbContext>(options => options.UseSqlServer(records_connection_string));
+            builder.Services.AddDbContext<NZWalksRecordsDbContext>(options => options.UseSqlServer(records_connection_string).EnableSensitiveDataLogging().LogTo(Console.WriteLine, LogLevel.Information));
             builder.Services.AddDbContext<NZWalksAuthDbContext>(options => options.UseSqlServer(auth_connection_string));
 
             builder.Services.AddAutoMapper(typeof(MapperProfile));
